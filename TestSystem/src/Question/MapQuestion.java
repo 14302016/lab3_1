@@ -13,8 +13,25 @@ public class MapQuestion extends Question {
 	List<String> side2 = new LinkedList<String>();
 	int side;
 	
-	public MapQuestion(){
+	public MapQuestion(String prompt, String[] side1, String[] side2){
 		super(5);
+		
+		this.setPrompt(prompt);
+		this.setSide(1);
+		for(int i=0; i<side1.length; i++){
+			this.setItem(side1[i]);
+		}
+		this.setSide(2);
+		for(int i=0; i<side2.length; i++){
+			this.setItem(side2[i]);
+		}
+	}
+	
+	public MapQuestion(String prompt, String[] side1, String[] side2, int score, String answer) {
+		this(prompt, side1, side2);
+		
+		this.setScore(score);
+		this.setAnswer(answer);
 	}
 	
 	public void setItem(String item) {

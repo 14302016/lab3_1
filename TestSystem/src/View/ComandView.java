@@ -4,6 +4,14 @@ import java.util.List;
 import java.util.Scanner;
 
 import Control.Control;
+import Control.NewPageCommand;
+import Control.NewQuestionCommand;
+import Question.ChoiceQuestion;
+import Question.DecideQuestion;
+import Question.EssayQuestion;
+import Question.MapQuestion;
+import Question.RankQuestion;
+import Question.ShortEssayQuestion;
 
 public class ComandView {
 	Control control = new Control();
@@ -299,20 +307,18 @@ public class ComandView {
 	
 	
 	public void createTest(){
-		control.createPage(1);
 		System.out.println("Please input your pageName");
 		String name = sc.next();
-		control.setPageName(name);
+		new NewPageCommand(control, name, 1).execute();
 		type = 1;
 		this.addQuestion();
 		System.out.println();
 	}
 	
 	public void createSurvey(){
-		control.createPage(0);
 		System.out.println("Please input your pageName");
 		String name = sc.next();
-		control.setPageName(name);
+		new NewPageCommand(control, name, 0).execute();
 		type = 0;
 		this.addQuestion();
 		System.out.println();
@@ -346,15 +352,19 @@ public class ComandView {
 		System.out.println("Enter the prompt for you True/False question:\n");
 		Scanner scan = new Scanner(System.in);
 		String prompt = scan.nextLine();
+		DecideQuestion question;
 		if(type == 1){
 			System.out.println("Please enter you anwser:\n");
 			String answer = scan.nextLine();
 			System.out.println("Please enter your score\n");
 			int score = sc.nextInt();
-			control.createDecideQuestion(prompt, score, answer);
-			return;
+			
+			question = new DecideQuestion(prompt, score, answer);
+		} else {
+			question = new DecideQuestion(prompt);	
 		}
-		control.createDecideQuestion(prompt);
+		
+		new NewQuestionCommand(control, question).execute();
 	}
 	
 	public void addChoiceQuestion(){
@@ -364,6 +374,7 @@ public class ComandView {
 		System.out.println("Please enter your choice number");
 		int number = sc.nextInt();
 		String[] items = new String[number];
+		ChoiceQuestion question;
 		for(int i=0; i<number; i++){
 			System.out.println("\nEnter your choice "+i);
 			items[i] = scan.nextLine();
@@ -373,38 +384,44 @@ public class ComandView {
 			String answer = scan.nextLine();
 			System.out.println("Please enter your score\n");
 			int score = sc.nextInt();
-			control.createChoiceQuestion(prompt, items, score, answer);
-			return;
+			question = new ChoiceQuestion(prompt, items, score, answer);
+		} else {
+			question = new ChoiceQuestion(prompt, items);	
 		}
-		control.createChoiceQuestion(prompt, items);
+		
+		new NewQuestionCommand(control, question).execute();
 	}
 	
 	public void addTextQuestion(){
 		System.out.println("Enter the prompt for you text question:");
 		Scanner scan = new Scanner(System.in);
 		String prompt = scan.nextLine();
+		ShortEssayQuestion question;
 		if(type == 1){
 			System.out.println("Please enter you anwser:\n");
 			String answer = scan.nextLine();
 			System.out.println("Please enter your score\n");
 			int score = sc.nextInt();
-			control.createTextQuestion(prompt, score, answer);
-			return;
+			question = new ShortEssayQuestion(prompt, score, answer);
+		} else {
+			question = new ShortEssayQuestion(prompt);	
 		}
-		control.createTextQuestion(prompt);
+		
+		new NewQuestionCommand(control, question).execute();
 	}
 	
 	public void addEssayQuestion(){
 		System.out.println("Enter the prompt for you essay question:");
 		Scanner scan = new Scanner(System.in);
 		String prompt = scan.nextLine();
-		control.createEssayQuestion(prompt);
+		new NewQuestionCommand(control, new EssayQuestion(prompt)).execute();
 	}
 	
 	public void addMapQuestion(){
 		System.out.println("Enter the prompt for you map question:");
 		Scanner scan = new Scanner(System.in);
 		String prompt = scan.nextLine();
+		MapQuestion question;
 		System.out.println("Please enter your left side choice number");
 		int number = sc.nextInt();
 		String[] side1 = new String[number];
@@ -424,16 +441,18 @@ public class ComandView {
 			String answer = scan.nextLine();
 			System.out.println("Please enter your score\n");
 			int score = sc.nextInt();
-			control.createMapQuestion(prompt, side1, side2, score, answer);
-			return;
+			question = new MapQuestion(prompt, side1, side2, score, answer);
+		} else {
+			question = new MapQuestion(prompt, side1, side2);	
 		}
-		control.createMapQuestion(prompt, side1, side2);
+		
 	}
 	
 	public void addRankQuestion(){
 		System.out.println("Enter the prompt for you rank question:");
 		Scanner scan = new Scanner(System.in);
 		String prompt = scan.nextLine();
+		RankQuestion question;
 		System.out.println("Please enter your choice number");
 		int number = sc.nextInt();
 		String[] items = new String[number];
@@ -446,10 +465,12 @@ public class ComandView {
 			String answer = scan.nextLine();
 			System.out.println("Please enter your score\n");
 			int score = sc.nextInt();
-			control.createRankQuestion(prompt, items, score, answer);
-			return;
+			question = new RankQuestion(prompt, items, score, answer);
+		} else {
+			question = new RankQuestion(prompt, items);	
 		}
-		control.createRankQuestion(prompt, items);
+		
+		new NewQuestionCommand(control, question).execute();
 	}
 	
 

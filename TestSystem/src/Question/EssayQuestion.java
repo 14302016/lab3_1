@@ -4,8 +4,10 @@ import Anwser.Answer;
 import Anwser.TextAnswer;
 
 public class EssayQuestion extends Question {
-	public EssayQuestion(){
+	public EssayQuestion(String prompt){
 		super(3);
+		
+		this.prompt = prompt;
 	}
 	
 	@Override

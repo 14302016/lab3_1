@@ -11,8 +11,20 @@ public class RankQuestion extends ItemQuestion {
 	RankAnswer answer;
 	List<String> items = new LinkedList<String>();
 	
-	public RankQuestion(){
+	public RankQuestion(String prompt, String[] items){
 		super(4);
+		
+		this.setPrompt(prompt);
+		for(int i=0; i<items.length; i++){
+			this.setItem(items[i]);
+		}
+	}
+	
+	public RankQuestion(String prompt, String[] items, int score, String answer){
+		this(prompt,items);
+		
+		this.setScore(score);
+		this.setAnswer(answer);
 	}
 	
 	@Override

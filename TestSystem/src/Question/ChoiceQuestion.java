@@ -10,8 +10,20 @@ public class ChoiceQuestion extends ItemQuestion {
 	List<String> items = new LinkedList<String>();
 	ChoiceAnswer answer;
 	
-	public ChoiceQuestion(){
+	public ChoiceQuestion(String prompt, String[] items){
 		super(1);
+
+		this.setPrompt(prompt);
+		for(int i=0; i<items.length; i++){
+			this.setItem(items[i]);
+		}
+	}
+	
+	public ChoiceQuestion(String prompt, String[] items, int score, String answer){
+		this(prompt, items);
+		
+		this.setScore(score);
+		this.setAnswer(answer);
 	}
 	
 	@Override

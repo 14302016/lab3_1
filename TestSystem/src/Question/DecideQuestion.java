@@ -6,8 +6,18 @@ import Anwser.DecideAnswer;
 public class DecideQuestion extends PromptQuestion {
 	DecideAnswer answer;
 	
-	public DecideQuestion(){
+	public DecideQuestion(String prompt, int score, String answer){
+		this(prompt);
+		
+		this.setScore(score);
+		this.setAnswer(answer);
+	}
+	
+	public DecideQuestion(String prompt)
+	{
 		super(0);
+		
+		this.setPrompt(prompt);
 	}
 	
 	@Override

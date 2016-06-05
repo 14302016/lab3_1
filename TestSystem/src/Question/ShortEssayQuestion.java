@@ -7,10 +7,19 @@ public class ShortEssayQuestion extends PromptQuestion {
 	
 	TextAnswer answer;
 	
-	public ShortEssayQuestion() {
+	public ShortEssayQuestion(String prompt) {
 		super(2);
-		// TODO Auto-generated constructor stub
+		
+		this.setPrompt(prompt);
 	}	
+	
+	public ShortEssayQuestion(String prompt, int score, String answer)
+	{
+		this(prompt);
+		
+		this.setScore(score);
+		this.setAnswer(answer);
+	}
 	
 	@Override
 	public String getQuestion(){

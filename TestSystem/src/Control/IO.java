@@ -159,67 +159,102 @@ public class IO {
 		return page;
 	}
 	
+	private String getPrompt(Element question) {
+		return question.getChildText("prompt");
+	}
+	
+	private int getScore(Element question){
+		return Integer.parseInt(question.getChildText("score"));
+	}
+	
+	private String getAnswer(Element question) {
+		return question.getChildText("answer");
+	}
+	
 	public Question readDecideQuestion(Element question){
-		DecideQuestion decide = new DecideQuestion();
-		decide.setPrompt(question.getChildText("prompt"));
-		decide.setScore(Integer.parseInt(question.getChildText("score")));
+		DecideQuestion decide;
+		String prompt = getPrompt(question);
+		int score = getScore(question);
 		if(question.getAttributeValue("answer").equals("1")){
-			decide.setAnswer(question.getChildText("answer"));
+			decide = new DecideQuestion(prompt,score, getAnswer(question));
+		}else{
+			decide = new DecideQuestion(prompt);
 		}
+		
 		return decide;
 	}
 	
 	public Question readChoiceQuestion(Element question){
-		ChoiceQuestion choice = new ChoiceQuestion();
-		choice.setPrompt(question.getChildText("prompt"));
-		choice.setScore(Integer.parseInt(question.getChildText("score")));
+		ChoiceQuestion choice;
+		String prompt = getPrompt(question);
+		int score = getScore(question);
 		List<Element> items = question.getChild("items").getChildren();
+		
+		if(question.getAttributeValue("answer").equals("1")){
+			choice = new ChoiceQuestion(prompt, new String[]{}, score, getAnswer(question));
+		} else {
+			choice = new ChoiceQuestion(prompt, new String[]{});
+		}
+		
 		for(int i=0; i<items.size(); i++){
 			Element item = items.get(i);
 			choice.setItem(item.getText());
 		}
-		if(question.getAttributeValue("answer").equals("1")){
-			choice.setAnswer(question.getChildText("answer"));
-		}
+		
 		return choice;
 	}
 	
 	public Question readTextAnswer(Element question){
-		ShortEssayQuestion text = new ShortEssayQuestion();
-		text.setPrompt(question.getChildText("prompt"));
-		text.setScore(Integer.parseInt(question.getChildText("score")));
+		ShortEssayQuestion text;
+		String prompt = getPrompt(question);
+		int score = getScore(question);
+		
 		if(question.getAttributeValue("answer").equals("1")){
-			text.setAnswer(question.getChildText("answer"));
+			text = new ShortEssayQuestion(prompt, score, getAnswer(question));
+		} else {
+			text = new ShortEssayQuestion(prompt);
 		}
+
 		return text;
 	}
 	
 	public Question readEssayQuestion(Element question){
-		EssayQuestion essay = new EssayQuestion();
-		essay.setPrompt(question.getChildText("prompt"));
+		EssayQuestion essay = new EssayQuestion(getPrompt(question));
 		return essay;
 	}
 	
 	public Question readRankQuestion(Element question){
-		RankQuestion rank = new RankQuestion();
-		rank.setPrompt(question.getChildText("prompt"));
-		rank.setScore(Integer.parseInt(question.getChildText("score")));
+		RankQuestion rank;
+		String prompt = getPrompt(question);
+		int score = getScore(question);
+		
+		if(question.getAttributeValue("answer").equals("1")){
+			rank = new RankQuestion(prompt, new String[]{}, score, getAnswer(question));
+		} else {
+			rank = new RankQuestion(prompt, new String[]{});
+		}
+		
 		List<Element> items = question.getChild("items").getChildren();
 		for(int i=0; i<items.size(); i++){
 			rank.setItem(items.get(i).getText());
 		}
 		System.out.println(question.getChildText("answer"));
-		if(question.getAttributeValue("answer").equals("1")){
-			rank.setAnswer(question.getChildText("answer"));
-		}
+		
 		return rank;
 	}
 	
 	public Question readMapQuestion(Element question){
-		MapQuestion map = new MapQuestion();
-		map.setPrompt(question.getChildText("prompt"));
+		MapQuestion map;
+		String prompt = getPrompt(question);
 		Element side1 = question.getChild("side1");
 		List<Element> sideList1 = side1.getChildren();
+		
+		if(question.getAttributeValue("answer").equals("1")){
+			map = new MapQuestion(prompt, new String[]{}, new String[]{}, 0, getAnswer(question));						
+		} else {
+			map = new MapQuestion(prompt, new String[]{}, new String[]{});
+		}
+		
 		map.setSide(1);
 		for(int j=0; j<sideList1.size(); j++){
 			map.setItem(sideList1.get(j).getText());
@@ -233,9 +268,7 @@ public class IO {
 		if(question.getAttributeValue("isScore").equals("1")){
 			map.setScore(Integer.parseInt(question.getChildText("score")));
 		}
-		if(question.getAttributeValue("answer").equals("1")){
-			map.setAnswer(question.getChildText("answer"));						
-		}
+
 		return map;
 	}
 	
