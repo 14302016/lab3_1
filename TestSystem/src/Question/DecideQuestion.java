@@ -9,7 +9,6 @@ public class DecideQuestion extends PromptQuestion {
 	public DecideQuestion(){
 		super(0);
 	}
-
 	
 	@Override
 	public String getQuestion(){
@@ -18,9 +17,8 @@ public class DecideQuestion extends PromptQuestion {
 	}
 	
 	@Override
-	public void setAnswer(String anwser){
-		answer = new DecideAnswer();
-		answer.setAnswer(anwser);
+	public void setAnswer(String answerString){
+		answer = constructAnswer(answerString);
 	}
 	
 	@Override
@@ -37,5 +35,13 @@ public class DecideQuestion extends PromptQuestion {
 	@Override
 	public boolean match(Answer answer) {
 		return this.answer.match(answer);
+	}
+
+	@Override
+	public DecideAnswer constructAnswer(String answerString) {
+		DecideAnswer ansObj = new DecideAnswer();
+		ansObj.setAnswer(answerString);
+		
+		return ansObj;
 	}
 }

@@ -28,10 +28,7 @@ public class MapQuestion extends Question {
 
 	@Override
 	public void setAnswer(String answer) {
-		// TODO Auto-generated method stub
-		this.answer = new MapAnswer();
-		this.answer.setQuestion(side1, side2);
-		this.answer.setAnswer(answer);
+		this.answer = constructAnswer(answer);
 	}
 
 	@Override
@@ -120,5 +117,14 @@ public class MapQuestion extends Question {
 	@Override
 	public boolean match(Answer answer) {
 		return this.answer.match(answer);
+	}
+
+	@Override
+	public MapAnswer constructAnswer(String answerString) {
+		MapAnswer ansObj = new MapAnswer();
+		ansObj.setQuestion(side1, side2);
+		ansObj.setAnswer(answerString);
+		
+		return ansObj;
 	}
 }

@@ -22,9 +22,7 @@ public class RankQuestion extends ItemQuestion {
 
 	@Override
 	public void setAnswer(String answer) {
-		this.answer = new RankAnswer();
-		this.answer.setQuestion(items);
-		this.answer.setAnswer(answer);
+		this.answer = constructAnswer(answer);
 	}
 
 	@Override
@@ -87,6 +85,15 @@ public class RankQuestion extends ItemQuestion {
 	@Override
 	public boolean match(Answer answer) {
 		return this.answer.match(answer);
+	}
+
+	@Override
+	public RankAnswer constructAnswer(String answerString) {
+		RankAnswer ansObj = new RankAnswer();
+		ansObj.setQuestion(items);
+		ansObj.setAnswer(answerString);
+		
+		return ansObj;
 	}
 
 }

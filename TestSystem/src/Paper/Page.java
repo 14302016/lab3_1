@@ -2,6 +2,7 @@ package Paper;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Iterator;
 
 import Question.Question;
 
@@ -49,27 +50,8 @@ public class Page {
 	}
 	
 	public Iterator<Question> iterator(){
-		return new IteratorQuestion();
+		return questionList.iterator();
 	}
 	
-	class IteratorQuestion implements Iterator<Question>{
-		int questionIndex;
-
-		@Override
-		public boolean hasNext() {
-			// TODO Auto-generated method stub
-			if(questionList.size() > questionIndex)
-				return true;
-			return false;
-		}
-
-		@Override
-		public Question next() {
-			// TODO Auto-generated method stub
-			return questionList.get(questionIndex++);
-		}
-		
-		
-	}
 	
 }

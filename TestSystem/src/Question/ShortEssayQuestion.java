@@ -19,10 +19,7 @@ public class ShortEssayQuestion extends PromptQuestion {
 	
 	@Override
 	public void setAnswer(String answer) {
-		// TODO Auto-generated method stub
-		
-		this.answer = new TextAnswer();
-		this.answer.setAnswer(answer);
+		this.answer = constructAnswer(answer);
 	}
 
 	@Override
@@ -35,5 +32,13 @@ public class ShortEssayQuestion extends PromptQuestion {
 	@Override
 	public boolean match(Answer answer) {
 		return this.answer.match(answer);
+	}
+
+	@Override
+	public TextAnswer constructAnswer(String answerString) {
+		TextAnswer ansObj = new TextAnswer();
+		ansObj.setAnswer(answerString);
+		
+		return ansObj;
 	}
 }

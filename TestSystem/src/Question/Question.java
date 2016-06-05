@@ -40,4 +40,5 @@ public abstract class Question {
 	
 	public abstract Answer getAnswer();
 	public abstract boolean match(Answer answer);
+	public abstract Answer constructAnswer(String answerString);
 }

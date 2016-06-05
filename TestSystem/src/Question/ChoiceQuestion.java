@@ -20,10 +20,8 @@ public class ChoiceQuestion extends ItemQuestion {
 	}
 
 	@Override
-	public void setAnswer(String answer) {
-		this.answer = new ChoiceAnswer();
-		this.answer.setItem(items);
-		this.answer.setAnswer(answer);
+	public void setAnswer(String answerString) {
+		this.answer = constructAnswer(answerString);
 	}
 
 	@Override
@@ -83,6 +81,15 @@ public class ChoiceQuestion extends ItemQuestion {
 	@Override
 	public boolean match(Answer answer) {
 		return this.answer.match(answer);
+	}
+
+	@Override
+	public ChoiceAnswer constructAnswer(String answerString) {
+		ChoiceAnswer ansObj = new ChoiceAnswer();
+		ansObj.setItem(items);
+		ansObj.setAnswer(answerString);
+		
+		return ansObj;
 	}
 
 }
