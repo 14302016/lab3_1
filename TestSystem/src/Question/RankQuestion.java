@@ -107,5 +107,4 @@ public class RankQuestion extends ItemQuestion {
 		
 		return ansObj;
 	}
-
 }

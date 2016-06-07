@@ -1,5 +1,6 @@
 package Question;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,6 +10,21 @@ import Anwser.ChoiceAnswer;
 public class ChoiceQuestion extends ItemQuestion {
 	List<String> items = new LinkedList<String>();
 	ChoiceAnswer answer;
+	
+	@Override
+	public java.util.HashMap<String,String> store() {
+		HashMap<String, String> returnVal = super.store();
+		
+		returnVal.put("type", "choice");
+		returnVal.put("isscore", "1");
+		returnVal.put("answer", this.getAnswer() == null? "0" : "1");
+		
+		for (String item : items) {
+			returnVal.put("items", item);
+		}
+		
+		return returnVal;
+	}
 	
 	public ChoiceQuestion(String prompt, String[] items){
 		super(1);

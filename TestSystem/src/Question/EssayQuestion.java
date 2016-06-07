@@ -3,7 +3,7 @@ package Question;
 import Anwser.Answer;
 import Anwser.TextAnswer;
 
-public class EssayQuestion extends Question {
+public class EssayQuestion extends PromptQuestion {
 	public EssayQuestion(String prompt){
 		super(3);
 		

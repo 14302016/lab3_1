@@ -6,9 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -39,7 +43,33 @@ import Question.ShortEssayQuestion;
 public class IO {
 	SAXBuilder builder = new SAXBuilder();
 	
+	/**
+	 * @deprecated
+	 * This implementation requires knowledge of subtype.
+	 * Use getPages() instead.
+	 */
+	@Deprecated
 	public List<String>[] readInfo(){
+		Map<String, String> pageList = getPages();
+		List<String> pageName[] = new ArrayList[2];
+		
+		pageName[0] = new ArrayList<String>();
+		pageName[1] = new ArrayList<String>();
+		
+		for (String page : pageList.keySet()) {
+			if(pageList.get(page).equals("survey")) {
+				pageName[0].add(page);
+			} else {
+				pageName[1].add(page);
+			}
+		}
+		
+		return pageName;
+	}
+	
+	public Map<String, String> getPages() {
+		HashMap<String, String> returnVal = new HashMap<>();
+		
 		InputStream file;
 		Element root = null;
 		try {
@@ -59,17 +89,11 @@ public class IO {
 		}
 		
 		List<Element> pageList = root.getChildren("pageName");
-		List<String>[] pageName = new List[2];
-		pageName[0] = new LinkedList<String>();
-		pageName[1] = new LinkedList<String>();
 		for(int i=0; i<pageList.size(); i++){
-			if(pageList.get(i).getAttributeValue("type").equals("test")){
-				pageName[1].add(pageList.get(i).getText());
-			}else{
-				pageName[0].add(pageList.get(i).getText());
-			}
+			returnVal.put(pageList.get(i).getText(), pageList.get(i).getAttributeValue("type"));
 		}
-		return pageName;
+		
+		return returnVal;
 	}
 	
 	public void writeInfo(List<String>[] pageName){
@@ -127,10 +151,8 @@ public class IO {
 			Test test = new Test();
 			test.setTotalScore(Integer.parseInt(root.getChildText("score")));
 			page = test;
-			page.setType("test");
 		}else{
 			page = new Survey();
-			page.setType("survey");
 		}
 		page.setPageName(pageName);
 		System.out.println(page.getPageName());
@@ -274,9 +296,9 @@ public class IO {
 	
 	public void writePage(Page page){
 		Element root = new Element("Page");
-		root.setAttribute("type", page.getType());
+		root.setAttribute("type", page.getTypeString());
 		root.addContent(new Element("pageName").setText(page.getPageName()));
-		if(page.getType().equals("test")){
+		if(page.getTypeString().equals("test")){
 			root.addContent(new Element("score").setText(((Test)page).getTotalScore()+""));
 		}
 		
@@ -298,7 +320,7 @@ public class IO {
 		root.addContent(questions);
 		Document doc=new Document(root);  
 		 try {
-			FileOutputStream out=new FileOutputStream("xml/"+page.getPageName()+".xml");
+			FileOutputStream out=new FileOutputStream("xml/"+page.getTypeString()+"/"+page.getPageName()+".xml");
 			XMLOutputter outputter = new XMLOutputter();  
 	        Format f = Format.getPrettyFormat();  
 	        outputter.setFormat(f);  

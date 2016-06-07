@@ -461,7 +461,7 @@ public class ComandView {
 			items[i] = scan.nextLine();
 		}
 		if(type == 1){
-			System.out.println("Please enter you anwser:\n");
+			System.out.println("Please enter you anwser:\n"); 
 			String answer = scan.nextLine();
 			System.out.println("Please enter your score\n");
 			int score = sc.nextInt();
@@ -472,7 +472,4 @@ public class ComandView {
 		
 		new NewQuestionCommand(control, question).execute();
 	}
-	
-
-	
 }

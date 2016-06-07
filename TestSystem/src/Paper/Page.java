@@ -2,16 +2,25 @@ package Paper;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import java.util.Iterator;
 
 import Question.Question;
 
-public class Page {
+public abstract class Page {
 	
 	String pageName;
-	String type;
 	
 	List<Question> questionList = new LinkedList<Question>();
+	
+	public HashMap<String, String> store() {
+		HashMap<String, String> returnVal = new HashMap<String, String>();
+		returnVal.put("type", this.getTypeString());
+		returnVal.put("pagename", this.getPageName());
+		
+		return returnVal;
+	}
 	
 	public void setPageName(String pageName){
 		this.pageName = pageName;
@@ -41,17 +50,17 @@ public class Page {
 		return questionList.size();
 	}
 	
-	public String getType(){
-		return type;
-	}
-	
-	public void setType(String type){
-		this.type = type;
-	}
-	
 	public Iterator<Question> iterator(){
 		return questionList.iterator();
 	}
 	
+	public void finalize(){
+		
+	}
 	
+	public void finalizeAnswer(Record record) {
+		
+	}
+
+	public abstract String getTypeString();
 }

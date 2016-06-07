@@ -1,33 +1,26 @@
 package Control;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.Iterator;
+import java.util.Observer;
 
 import Anwser.Answer;
-import Anwser.ChoiceAnswer;
-import Anwser.DecideAnswer;
-import Anwser.MapAnswer;
-import Anwser.RankAnswer;
-import Anwser.TextAnswer;
 import Paper.Page;
 import Paper.Record;
 import Paper.Survey;
 import Paper.Test;
-import Question.ChoiceQuestion;
-import Question.DecideQuestion;
-import Question.EssayQuestion;
 import Question.ItemQuestion;
 import Question.MapQuestion;
 import Question.Question;
-import Question.RankQuestion;
-import Question.ShortEssayQuestion;
+import utils.GenericObservable;
 
 public class Control {
-	List<String>[] pageNameList;
-	Page page;
+	Map<String, String> pageNameList;
+	GenericObservable<Page> page;
 	Question question;
 	int index;
 	Record record;
@@ -36,26 +29,37 @@ public class Control {
 	Iterator<Question> iterator;
 	
 	public Control(){
-		pageNameList = io.readInfo();
+		pageNameList = io.getPages();
+		page = new GenericObservable<Page>(null);
 	}
 	
+	public void observePage(Observer o)
+	{
+		page.addObserver(o);
+	}
+	
+	/**
+	 * @deprecated
+	 * requires knowledge of subtype.
+	 * Use createPage(Page) instead.
+	 */
+	@Deprecated
 	public void createPage(int type){
 		if(type == 0){
-			page = new Survey();
-			page.setType("survey");
+			createPage(new Survey());
 		}else{
-			page = new Test();
-			page.setType("test");
+			createPage(new Test());
 		}
 	}
-		
+	
+	public void createPage(Page newPage) {
+		page.set(newPage);
+		pageNameList.put(page.get().getPageName(), page.get().getTypeString());
+	}
+	
 	public void setPageName(String name){
-		page.setPageName(name);
-		if(page.getType().equals("test")){
-			pageNameList[1].add(name);
-		}else{
-			pageNameList[0].add(name);
-		}
+		page.get().setPageName(name);
+		pageNameList.put(name, page.get().getTypeString());
 	}
 	
 	public void setItem(String item){
@@ -86,17 +90,52 @@ public class Control {
 		question.setScore(score);
 	}
 	
+	public Map<String, String> getPageName() {
+		return io.getPages();
+	}
+	
+	/**
+	 * @deprecated
+	 * This method exist for compatibility.
+	 */
+	@Deprecated
+	private List<String>[] getPageNameList() {
+		Map<String, String> pageList = getPageName();
+		List<String> pageName[] = new ArrayList[2];
+		
+		pageName[0] = new ArrayList<String>();
+		pageName[1] = new ArrayList<String>();
+		
+		for (String page : pageList.keySet()) {
+			if(pageList.get(page).equals("survey")) {
+				pageName[0].add(page);
+			} else {
+				pageName[1].add(page);
+			}
+		}
+		
+		return pageName;
+	}
+	
+	/**
+	 * @deprecated
+	 * Deprecated because it requires knowledge of subtype.
+	 * Use getPageName() instead
+	 */
+	@Deprecated
 	public List<String> getPageName(int type){
-		return pageNameList[type];
+		return getPageNameList()[type];
 	}
 	
 	public List<String> displayPage(int index, int type){
+		List<String>[] pageNameList = getPageNameList();
+		
 		List<String> ret = new LinkedList<String>();
 		if(pageNameList[type].size() <= index){
 			return ret;
 		}else{
-			page = io.readPage(pageNameList[type].get(index));
-			Iterator<Question> questions = page.iterator();
+			page.set(io.readPage(pageNameList[type].get(index)));
+			Iterator<Question> questions = page.get().iterator();
 			while(questions.hasNext()){
 				Question q = questions.next();
 				int ty = q.getType();
@@ -111,33 +150,27 @@ public class Control {
 	}
 	
 	public void save(){
-		if(page.getType().equals("test")){
-			Test test = (Test)page;
-			test.computeScore();
-		}
-		io.writeInfo(pageNameList);
-		io.writePage(page);
+		page.get().finalize();
+		io.writeInfo(getPageNameList());
+		io.writePage(page.get());
 	}
 	
 	public int modify(int index){
-		if(index >= page.getQuestionList().size()){
+		if(index >= page.get().getQuestionList().size()){
 			return -1;
 		}else{
-			question = page.getQuestion(index);
+			question = page.get().getQuestion(index);
 			return question.getType();
 		}
 	}
 	
 	public void addQuestion(Question question)
 	{
-		page.addQuestion(question);
+		page.get().addQuestion(question);
 	}
 	
 	public boolean remove(int index){
-		if(question.getType() == 5){
-			return ((MapQuestion)question).remove(index);
-		}
-		return ((ItemQuestion)question).remove(index);
+		return question.remove(index);
 	}
 	
 	public boolean changeItem(int index, String item){
@@ -155,13 +188,13 @@ public class Control {
 	}
 	
 	public void loadPage(int index, int type){
-		page = io.readPage(pageNameList[type].get(index));
+		page.set(io.readPage(getPageNameList()[type].get(index)));
 		record = new Record();
 	}
 	
 	public void setRecordName(String name){
 		record.setPersonName(name);
-		iterator = page.iterator();
+		iterator = page.get().iterator();
 	}
 	
 	public String nextQuestion(){
@@ -179,38 +212,27 @@ public class Control {
 	}
 	
 	public void saveAnswer(){
-		recordName = io.readRecordInfo(page.getPageName());
-		recordName.add(page.getPageName()+"-"+record.getPersonName());
-		if(page.getType().equals("test")){
-			this.grade();
-		}
-		io.writeReordInfo(page.getPageName(), recordName);
-		io.writeRecord(page.getPageName()+"-"+record.getPersonName(), record);
+		recordName = io.readRecordInfo(page.get().getPageName());
+		recordName.add(page.get().getPageName()+"-"+record.getPersonName());
+		
+		page.get().finalizeAnswer(record);
+		
+		io.writeReordInfo(page.get().getPageName(), recordName);
+		io.writeRecord(page.get().getPageName()+"-"+record.getPersonName(), record);
 	}
 	
 	public void grade(){
-		Iterator<Question> questionIterator = page.iterator();
-		Iterator<Answer> answerIterator = record.iterator();
-		if(questionIterator.hasNext()){
-			Question q = questionIterator.next();
-			if(q.getType() != 3){
-				if(q.match(answerIterator.next())){
-					record.addScore(q.getScore());
-				}
-			}else{
-				answerIterator.next();
-			}
-		}
+		page.get().finalizeAnswer(record);
 	}
 	
 	public String getOutcome(int index, int type){
 		this.loadPage(index, type);
-		recordName = io.readRecordInfo(page.getPageName());
+		recordName = io.readRecordInfo(page.get().getPageName());
 		List<Iterator<Answer>> recordList = new LinkedList<Iterator<Answer>>();
 		for(int i=0; i<recordName.size(); i++){
 			recordList.add(io.readRecord(recordName.get(i)).iterator());
 		}
-		Iterator<Question> questionIterator = page.iterator();
+		Iterator<Question> questionIterator = page.get().iterator();
 		List<String> outcome = new LinkedList<String>();
 		while(questionIterator.hasNext()){
 			Question question = questionIterator.next();
