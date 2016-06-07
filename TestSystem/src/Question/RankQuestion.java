@@ -2,6 +2,7 @@ package Question;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import Anwser.Answer;
 import Anwser.RankAnswer;
@@ -106,5 +107,11 @@ public class RankQuestion extends ItemQuestion {
 		ansObj.setAnswer(answerString);
 		
 		return ansObj;
+	}
+
+	@Override
+	public Map<String, FieldType> getFields() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

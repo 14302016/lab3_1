@@ -1,8 +1,10 @@
 package Question;
 
+import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import Anwser.Answer;
 import Anwser.ChoiceAnswer;
@@ -120,4 +122,13 @@ public class ChoiceQuestion extends ItemQuestion {
 		return ansObj;
 	}
 
+	@Override
+	public Map<String, FieldType> getFields() {
+		HashMap<String, FieldType> returnVal = new HashMap<>();
+		
+		returnVal.put("prompt", FieldType.STRING);
+		//TODO: Fill in fields
+		
+		return returnVal;
+	}
 }

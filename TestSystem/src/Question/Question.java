@@ -1,6 +1,7 @@
 package Question;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import Anwser.Answer;
 
@@ -53,4 +54,5 @@ public abstract class Question {
 	public abstract boolean match(Answer answer);
 	public abstract Answer constructAnswer(String answerString);
 	public abstract boolean remove(int index);
+	public abstract Map<String, FieldType> getFields();
 }

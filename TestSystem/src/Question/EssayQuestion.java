@@ -1,5 +1,7 @@
 package Question;
 
+import java.util.Map;
+
 import Anwser.Answer;
 import Anwser.TextAnswer;
 
@@ -39,5 +41,11 @@ public class EssayQuestion extends PromptQuestion {
 		ansObj.setAnswer(answerString);
 		
 		return ansObj;
+	}
+
+	@Override
+	public Map<String, FieldType> getFields() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
